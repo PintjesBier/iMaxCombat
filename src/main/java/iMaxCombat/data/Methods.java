@@ -32,7 +32,7 @@ public class Methods
                     return Core.CrabsArea.contains(CHARACTER.getLocation()) && CHARACTER.getAnimation() == -1;
                 }
             },5000);
-            Time.sleep(800);
+            Time.sleep(4751, 15874);
         }
     }
 

@@ -37,11 +37,11 @@ public class TrainCombat implements Strategy, MessageListener {
 
             Core.CurrentStatus = "Killing Rock Crab";
 
-/*            if (!Core.CrabsArea.contains(getMyPlayer().getLocation()))
+           if (!Core.CrabsArea.contains(getMyPlayer().getLocation()))
             {
                 Methods.TeleportToTrain();
 
-            }*/
+            }
 
             if (Core.AutoChangeAttackStyles) {
                 //SET ATTACK STYLE TO ATTACK
@@ -56,14 +56,15 @@ public class TrainCombat implements Strategy, MessageListener {
                     && !getMyPlayer().isInCombat()
                     && Core.CrabsArea.contains(getMyPlayer().getLocation())) {
                 Logger.addMessage("iMaxCombat: Searching for crabs", true);
+
                 Core.CRAB = Npcs.getNearest(Constants.CRAB_ID);
-                Time.sleep(2000, 2450);
+
+                Time.sleep(4000);
             }
 
             if (Core.CRAB != null
                     && !getMyPlayer().isInCombat()
                     && Core.CrabsArea.contains(getMyPlayer().getLocation())) {
-                Logger.addMessage("iMaxCombat: Found crab, attacking...", true);
 
                 Core.CRAB[Teller].interact(Npcs.Option.ATTACK);
 
@@ -75,9 +76,14 @@ public class TrainCombat implements Strategy, MessageListener {
             Time.sleep(new SleepCondition() {
                 @Override
                 public boolean isValid() {
-                    return Players.getMyPlayer().getInteractingCharacter() == null;
+                    return getMyPlayer().getInteractingCharacter() == null;
                 }
             }, 5000);
+
+           if (getMyPlayer().getInteractingCharacter() == null)
+           {
+               Teller = 0;
+           }
 
         } catch (Exception e) {
             System.out.println(e);

@@ -39,13 +39,13 @@ public class Core extends Script implements Paintable {
     public static boolean AutoChangeAttackStyles = false;
 
     //TIMER
-    public static org.parabot.environment.api.utils.Timer Timer = new org.parabot.environment.api.utils.Timer();
+    private static org.parabot.environment.api.utils.Timer Timer = new org.parabot.environment.api.utils.Timer();
 
     //AREAS
-    public static Area CrabsArea = new Area(new Tile(3700, 2670, 0), new Tile(3700, 2700, 0), new Tile(3730, 2700, 0), new Tile(3730, 2670, 0));
+    public static Area CrabsArea = new Area(new Tile(3700, 2665, 0), new Tile(3700, 2700, 0), new Tile(3730, 2700, 0), new Tile(3730, 2665, 0));
 
     //TrainCombat Strategy
-    public static Integer KILLCOUNT = 0;
+    private static Integer KILLCOUNT = 0;
     public static Npc[] CRAB;
 
     @Override
