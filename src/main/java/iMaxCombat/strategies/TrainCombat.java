@@ -2,6 +2,7 @@ package iMaxCombat.strategies;
 
 import iMaxCombat.core.Core;
 import iMaxCombat.data.Constants;
+import iMaxCombat.data.Methods;
 import org.parabot.core.ui.Logger;
 import org.parabot.environment.api.utils.Random;
 import org.parabot.environment.api.utils.Time;
@@ -23,7 +24,7 @@ import static org.rev317.min.api.methods.Players.getMyPlayer;
 public class TrainCombat implements Strategy, MessageListener {
 
     //VARIABLES
-    public org.rev317.min.api.wrappers.Npc Crab;
+    public int Teller = 0;
 
     @Override
     public boolean activate() {
@@ -42,20 +43,29 @@ public class TrainCombat implements Strategy, MessageListener {
 
             }*/
 
-            /*Methods.ChangeCombatStyles();*/
+            if (Core.AutoChangeAttackStyles) {
+                //SET ATTACK STYLE TO ATTACK
+                Methods.AttackStyle();
+                Core.CurrentAttackStyle = "Attack";
 
-            while (Core.CRAB == null && !getMyPlayer().isInCombat())
-            {
+                Methods.ChangeCombatStyles();
+            }
+
+
+            while (Core.CRAB == null
+                    && !getMyPlayer().isInCombat()
+                    && Core.CrabsArea.contains(getMyPlayer().getLocation())) {
                 Logger.addMessage("iMaxCombat: Searching for crabs", true);
                 Core.CRAB = Npcs.getNearest(Constants.CRAB_ID);
                 Time.sleep(2000, 2450);
             }
 
-            if (Core.CRAB != null && !getMyPlayer().isInCombat())
-            {
+            if (Core.CRAB != null
+                    && !getMyPlayer().isInCombat()
+                    && Core.CrabsArea.contains(getMyPlayer().getLocation())) {
                 Logger.addMessage("iMaxCombat: Found crab, attacking...", true);
 
-                Core.CRAB[0].interact(Npcs.Option.ATTACK);
+                Core.CRAB[Teller].interact(Npcs.Option.ATTACK);
 
                 Core.CRAB = null;
                 Time.sleep(1500, 1711);
@@ -69,9 +79,7 @@ public class TrainCombat implements Strategy, MessageListener {
                 }
             }, 5000);
 
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             System.out.println(e);
         }
 
@@ -83,11 +91,16 @@ public class TrainCombat implements Strategy, MessageListener {
     {
         if (messageEvent.getMessage().contains("I am already under attack."))
         {
-            Time.sleep(5000);
+            Time.sleep(new SleepCondition() {
+                @Override
+                public boolean isValid() {
+                    return Players.getMyPlayer().getInteractingCharacter() == null;
+                }
+            }, 50000);
         }
         else if (messageEvent.getMessage().contains("This monster is already in combat."))
         {
-            Core.CRAB = null;
+            Teller++;
             Time.sleep(Random.between(1500,3000));
         }
     }
