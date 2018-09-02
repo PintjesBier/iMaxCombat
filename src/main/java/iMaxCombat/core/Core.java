@@ -2,6 +2,7 @@ package iMaxCombat.core;
 
 
 import iMaxCombat.data.Area;
+import iMaxCombat.strategies.AntiBan;
 import iMaxCombat.strategies.DataGathering;
 import iMaxCombat.strategies.Relog;
 import iMaxCombat.strategies.TrainCombat;
@@ -56,6 +57,7 @@ public class Core extends Script implements Paintable {
 
         //LOAD STRATEGIES
         strategies.add(new Relog());
+        strategies.add(new AntiBan());
         strategies.add(new DataGathering());
         strategies.add(new TrainCombat());
 
