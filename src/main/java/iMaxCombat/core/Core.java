@@ -1,6 +1,7 @@
 package iMaxCombat.core;
 
 
+import iMaxCombat.antiban.WhitelistAntiBan;
 import iMaxCombat.data.Area;
 import iMaxCombat.strategies.AntiBan;
 import iMaxCombat.strategies.DataGathering;
@@ -36,7 +37,6 @@ public class Core extends Script implements Paintable {
     private final ArrayList<Strategy> strategies = new ArrayList<>();
     public static String CurrentStatus = "Starting...";
     public static String CurrentAttackStyle;
-    public static boolean StaffDetected = false;
     public static boolean AutoChangeAttackStyles = false;
 
     //TIMER
@@ -57,7 +57,7 @@ public class Core extends Script implements Paintable {
 
         //LOAD STRATEGIES
         strategies.add(new Relog());
-        strategies.add(new AntiBan());
+        strategies.add(new WhitelistAntiBan());
         strategies.add(new DataGathering());
         strategies.add(new TrainCombat());
 
