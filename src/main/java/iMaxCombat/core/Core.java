@@ -27,7 +27,7 @@ import java.util.ArrayList;
         description = "Will train all melee skills to 99 at rock crabs",
         name = "iMaxCombat",
         servers = { "Revival" },
-        version = 0.1)
+        version = 1.1)
 
 public class Core extends Script implements Paintable {
     //VARIABLES
