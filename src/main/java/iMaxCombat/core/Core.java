@@ -3,10 +3,7 @@ package iMaxCombat.core;
 
 import iMaxCombat.antiban.WhitelistAntiBan;
 import iMaxCombat.data.Area;
-import iMaxCombat.strategies.AntiBan;
-import iMaxCombat.strategies.DataGathering;
-import iMaxCombat.strategies.Relog;
-import iMaxCombat.strategies.TrainCombat;
+import iMaxCombat.strategies.*;
 import org.parabot.environment.api.interfaces.Paintable;
 import org.parabot.environment.api.utils.Timer;
 import org.parabot.environment.scripts.Category;
@@ -45,7 +42,7 @@ public class Core extends Script implements Paintable {
     //AREAS
     public static Area CrabsArea = new Area(new Tile(3700, 2665, 0), new Tile(3700, 2700, 0), new Tile(3730, 2700, 0), new Tile(3730, 2665, 0));
 
-    //TrainCombat Strategy
+    //AttackNPC Strategy
     private static Integer KILLCOUNT = 0;
     public static Npc[] CRAB;
 
@@ -59,7 +56,9 @@ public class Core extends Script implements Paintable {
         strategies.add(new Relog());
         strategies.add(new WhitelistAntiBan());
         strategies.add(new DataGathering());
-        strategies.add(new TrainCombat());
+        strategies.add(new SearchNPC());
+        strategies.add(new AttackNPC());
+        strategies.add(new WaitForKill());
 
         provide(strategies);
         return true;

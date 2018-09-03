@@ -4,7 +4,6 @@ import iMaxCombat.core.Core;
 import iMaxCombat.data.Constants;
 import iMaxCombat.data.Methods;
 import org.parabot.core.ui.Logger;
-import org.parabot.environment.api.utils.Random;
 import org.parabot.environment.api.utils.Time;
 import org.parabot.environment.scripts.framework.SleepCondition;
 import org.parabot.environment.scripts.framework.Strategy;
@@ -21,26 +20,25 @@ import static org.rev317.min.api.methods.Players.getMyPlayer;
  * Created by Tristan on 14/03/2018.
  */
 
-public class TrainCombat implements Strategy, MessageListener {
+public class AttackNPC implements Strategy, MessageListener {
 
     //VARIABLES
-    public int Teller = 0;
+    public static int Teller = 0;
 
     @Override
     public boolean activate() {
-        return Game.isLoggedIn();
+        return (Game.isLoggedIn() && !getMyPlayer().isInCombat() && Core.CRAB != null);
     }
 
     @Override
     public void execute() {
         try {
-
-            Core.CurrentStatus = "Killing Rock Crab";
+            Core.CurrentStatus = "Attacking NPC";
+            Logger.addMessage("iMaxCombat: Attacking NPC", true);
 
            if (!Core.CrabsArea.contains(getMyPlayer().getLocation()))
             {
                 Methods.TeleportToTrain();
-
             }
 
             if (Core.AutoChangeAttackStyles) {
@@ -51,39 +49,24 @@ public class TrainCombat implements Strategy, MessageListener {
                 Methods.ChangeCombatStyles();
             }
 
-
-            while (Core.CRAB == null
-                    && !getMyPlayer().isInCombat()
-                    && Core.CrabsArea.contains(getMyPlayer().getLocation())) {
-                Logger.addMessage("iMaxCombat: Searching for crabs", true);
-
-                Core.CRAB = Npcs.getNearest(Constants.CRAB_ID);
-
-                Time.sleep(4000);
-            }
-
             if (Core.CRAB != null
                     && !getMyPlayer().isInCombat()
-                    && Core.CrabsArea.contains(getMyPlayer().getLocation())) {
+                    && Core.CrabsArea.contains(getMyPlayer().getLocation())
+                    && !Core.CRAB[Teller].isInCombat()) {
 
                 Core.CRAB[Teller].interact(Npcs.Option.ATTACK);
 
                 Core.CRAB = null;
-                Time.sleep(1500, 1711);
+
+                //WAIT UNTIL IN COMBAT
+                Time.sleep(new SleepCondition() {
+                    @Override
+                    public boolean isValid() {
+                        return getMyPlayer().isInCombat();
+                    }
+                }, 5000);
 
             }
-
-            Time.sleep(new SleepCondition() {
-                @Override
-                public boolean isValid() {
-                    return getMyPlayer().getInteractingCharacter() == null;
-                }
-            }, 5000);
-
-           if (getMyPlayer().getInteractingCharacter() == null)
-           {
-               Teller = 0;
-           }
 
         } catch (Exception e) {
             System.out.println(e);
@@ -100,14 +83,19 @@ public class TrainCombat implements Strategy, MessageListener {
             Time.sleep(new SleepCondition() {
                 @Override
                 public boolean isValid() {
-                    return Players.getMyPlayer().getInteractingCharacter() == null;
+                    return !getMyPlayer().isInCombat();
                 }
             }, 50000);
         }
-        else if (messageEvent.getMessage().contains("This monster is already in combat."))
-        {
-            Teller++;
-            Time.sleep(Random.between(1500,3000));
+        else if (messageEvent.getMessage().contains("This monster is already under attack")) {
+            Core.CurrentStatus = "Skipping NPC, already in combat!";
+            Logger.addMessage("iMaxCombat: Already under attack!", true);
+
+            Core.CRAB[Teller + 1].interact(Npcs.Option.ATTACK);
+
+            Core.CRAB = null;
+            Time.sleep(1500, 1711);
+
         }
     }
 }
